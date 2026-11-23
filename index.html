@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="description" content="安心爪 - 可验证的宠物照护平台，上门喂养、寄养、遛狗，全程留痕可追溯">
+<title>安心爪 · 可验证的宠物照护平台</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>">
+<style>
+:root{
+  --brand:#C15B36;--brand-d:#9E4423;--brand-l:#F7E7DE;
+  --green:#1F6E5C;--green-l:#E4F1EC;--green-d:#165243;
+  --gold:#B9882F;--gold-l:#FBF2DF;
+  --red:#B4433C;--red-l:#F8E7E5;
+  --ink:#2A2523;--ink2:#5A504A;--muted:#948880;--line:#EBE3DB;--bg:#F7F4EF;--card:#fff;
+  --dash:#20303A;
+  --sh:0 2px 6px rgba(42,37,35,.06),0 14px 36px rgba(42,37,35,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:"PingFang SC","Microsoft YaHei",system-ui,-apple-system,sans-serif;background:#EDE8E0;color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+
+.stage{min-height:100vh;padding:26px 24px 40px}
+.layout{max-width:1240px;margin:0 auto;display:grid;grid-template-columns:340px minmax(0,1fr);gap:46px;align-items:start}
+@media(max-width:980px){.layout{grid-template-columns:1fr;gap:26px}.side-info{order:2}}
+
+.side-info{padding-top:24px}
+.side-brand{display:flex;align-items:center;gap:12px;margin-bottom:30px}
+.side-logo{width:50px;height:50px;border-radius:15px;background:var(--brand);display:flex;align-items:center;justify-content:center;font-size:27px;box-shadow:0 6px 16px rgba(193,91,54,.28)}
+.side-brand h2{font-size:21px;font-weight:800;letter-spacing:-.4px}
+.side-brand p{font-size:12px;color:var(--muted);margin-top:1px}
+.side-block{margin-bottom:24px}
+.side-block h3{font-size:13.5px;font-weight:800;margin-bottom:7px;color:var(--ink)}
+.side-block p{font-size:12.5px;color:var(--ink2);line-height:1.75}
+.side-list{list-style:none;margin-top:4px}
+.side-list li{font-size:12.5px;color:var(--ink2);padding:6px 0;display:flex;align-items:center;gap:10px}
+.side-list li span{width:20px;height:20px;border-radius:6px;background:var(--brand-l);color:var(--brand);font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:none}
+.side-tip{background:var(--green-l);border-radius:13px;padding:14px 16px;border:1px solid #C9E2D7}
+.side-tip h3{color:var(--green-d)}
+.side-warn{background:var(--gold-l);border-radius:13px;padding:14px 16px;border:1px solid #EDDDB3}
+.side-warn h3{color:#7A5A15}
+
+.device-wrap{display:flex;flex-direction:column;align-items:center}
+.role-guide{font-size:12px;font-weight:800;color:var(--brand-d);background:var(--brand-l);border:1px dashed #E4BCA6;border-radius:10px;padding:7px 15px;margin-bottom:10px;text-align:center}
+.role-bar{display:flex;gap:5px;background:var(--card);border:1px solid var(--line);border-radius:13px;padding:5px;box-shadow:var(--sh);margin-bottom:18px}
+.role-btn{font-family:inherit;font-size:12.5px;font-weight:700;border:none;background:transparent;color:var(--muted);padding:8px 18px;border-radius:9px;cursor:pointer;transition:.18s}
+.role-btn.active{background:var(--ink);color:#fff}
+.role-btn:hover:not(.active){color:var(--brand)}
+
+.phone{background:#263037;border-radius:42px;padding:10px;box-shadow:0 24px 60px rgba(30,40,48,.3);position:relative;width:390px}
+.phone::before{content:"";position:absolute;top:16px;left:50%;transform:translateX(-50%);width:96px;height:22px;background:#263037;border-radius:0 0 15px 15px;z-index:20}
+.screen{background:var(--bg);border-radius:33px;overflow:hidden;height:760px;display:flex;flex-direction:column;position:relative}
+.statusbar{height:38px;display:flex;justify-content:space-between;align-items:center;padding:0 24px;font-size:11.5px;font-weight:700;color:var(--ink);flex:none;padding-top:8px}
+.sb-r{display:flex;gap:5px;align-items:center;font-size:9px}
+.app-header{flex:none;background:var(--card);border-bottom:1px solid var(--line)}
+.app-body{flex:1;overflow-y:auto;scrollbar-width:none;position:relative}
+.app-body::-webkit-scrollbar{display:none}
+.tabbar{height:60px;background:var(--card);border-top:1px solid var(--line);display:flex;flex:none;padding-bottom:5px}
+.tabbar .tb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:10px;color:var(--muted);cursor:pointer;transition:.15s}
+.tabbar .tb .ti{width:22px;height:22px;display:flex;align-items:center;justify-content:center}
+.tabbar .tb .ti svg{width:20px;height:20px}
+.tabbar .tb.on{color:var(--brand)}
+.device-caption{font-size:11.5px;color:var(--muted);margin-top:14px}
+
+.hd-row{padding:13px 16px;display:flex;align-items:center;gap:10px}
+.hd-row h3{font-size:16px;font-weight:800}
+.hd-row .sub{font-size:11px;color:var(--muted);display:block;font-weight:400;margin-top:1px}
+.hd-row .right{margin-left:auto;font-size:12px;color:var(--brand);font-weight:700}
+.back-btn{width:30px;height:30px;border-radius:9px;border:1px solid var(--line);background:var(--card);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink2);font-size:17px;flex:none}
+
+.body-pad{padding:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:14px;margin-bottom:12px}
+.hero{background:linear-gradient(135deg,#C15B36,#9E4423);border-radius:17px;padding:18px 16px;color:#fff;margin-bottom:13px;position:relative;overflow:hidden}
+.hero::after{content:"🐾";position:absolute;right:-6px;bottom:-24px;font-size:110px;opacity:.09}
+.hero h2{font-size:19px;font-weight:800;letter-spacing:-.3px;position:relative;z-index:1}
+.hero p{font-size:11.5px;opacity:.9;margin-top:5px;position:relative;z-index:1}
+.hero .hero-tags{display:flex;gap:6px;margin-top:13px;position:relative;z-index:1;flex-wrap:wrap}
+.hero .hero-tags span{font-size:10px;background:rgba(255,255,255,.18);padding:4px 8px;border-radius:6px}
+
+.sec-title{font-size:13.5px;font-weight:800;margin:16px 2px 10px;display:flex;align-items:center;gap:7px}
+.sec-title .more{margin-left:auto;font-size:11px;color:var(--muted);font-weight:500}
+
+.svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.svc{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:13px 9px;text-align:center;cursor:pointer;transition:.18s}
+.svc:hover{border-color:var(--brand);transform:translateY(-2px)}
+.svc .ico{font-size:26px;display:block;margin-bottom:5px}
+.svc b{font-size:12.5px;display:block}
+.svc span{font-size:10.5px;color:var(--muted)}
+.svc .price{color:var(--brand);font-weight:800;margin-top:4px;display:block;font-size:11.5px}
+
+.worker-card{display:flex;gap:11px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px;cursor:pointer;transition:.18s}
+.worker-card:hover{border-color:var(--brand)}
+.worker-card.sel{border-color:var(--brand);background:var(--brand-l);box-shadow:0 0 0 2px rgba(193,91,54,.1)}
+.wava{width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;flex:none;color:#fff}
+.winfo{min-width:0;flex:1}
+.winfo .n{font-size:13.5px;font-weight:800;display:flex;align-items:center;gap:6px}
+.winfo .sc{font-size:10.5px;color:var(--green);font-weight:700}
+.winfo .meta{font-size:10.5px;color:var(--muted);margin-top:3px}
+.winfo .tags{display:flex;gap:4px;margin-top:5px;flex-wrap:wrap}
+.winfo .tags span{font-size:9px;background:var(--bg);color:var(--ink2);padding:2px 6px;border-radius:5px}
+.wcard-right{text-align:right;flex:none}
+.wcard-right .rate{font-size:10px;color:var(--ink2)}
+.wcard-right .rate b{color:var(--brand);font-size:13px}
+.wcard-right .rep{font-size:9.5px;color:var(--muted);margin-top:2px}
+.wcard-right .pick{font-size:10px;background:var(--brand);color:#fff;border:none;border-radius:7px;padding:5px 10px;font-family:inherit;font-weight:700;cursor:pointer;margin-top:7px}
+.wcard-right .pick.picked{background:var(--green)}
+
+.trust-strip{display:flex;gap:7px;margin-bottom:12px}
+.trust-strip div{flex:1;background:var(--green-l);border-radius:10px;padding:9px 5px;text-align:center;font-size:9.5px;color:var(--green-d);line-height:1.4}
+.trust-strip div b{display:block;font-size:16px;font-weight:800}
+
+.order-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px;margin-bottom:10px;cursor:pointer;transition:.18s}
+.order-card:hover{border-color:var(--brand)}
+.oc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}
+.oc-top .id{font-size:10.5px;color:var(--muted)}
+.oc-top .st{font-size:10px;padding:3px 8px;border-radius:6px;font-weight:700}
+.st-wait{background:var(--gold-l);color:var(--gold)}
+.st-paid{background:var(--brand-l);color:var(--brand)}
+.st-serving{background:var(--blue-l);color:#35699E}
+.st-report{background:#EDE8FA;color:#6C4FB5}
+.st-done{background:var(--green-l);color:var(--green)}
+.oc-body{display:flex;gap:10px;align-items:center}
+.oc-pet{width:42px;height:42px;border-radius:11px;background:linear-gradient(135deg,#F6D9C4,#E6AE86);display:flex;align-items:center;justify-content:center;font-size:22px;flex:none}
+.oc-body .t b{font-size:13px;display:block}
+.oc-body .t span{font-size:10.5px;color:var(--muted)}
+.oc-body .amt{margin-left:auto;font-weight:800;color:var(--brand);font-size:15px}
+
+.field{margin-bottom:14px}
+.field label{display:block;font-size:11.5px;color:var(--ink2);font-weight:700;margin-bottom:6px}
+.field input,.field textarea,.field select{width:100%;font-family:inherit;font-size:13px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);outline:none}
+.field input:focus,.field textarea:focus{border-color:var(--brand)}
+.field textarea{resize:vertical;min-height:62px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.qr-upload{display:block;width:100%;min-height:180px;border:1.5px dashed #E4BCA6;border-radius:12px;background:var(--brand-l);cursor:pointer;position:relative;overflow:hidden;text-align:center}
+.qr-upload img{width:170px;height:170px;object-fit:contain;background:#fff;display:block;margin:6px auto;border-radius:8px}
+.qr-upload .up-ph{display:block;color:var(--brand);font-size:11px;font-weight:700;padding:56px 10px;line-height:1.8}
+.qr-upload .up-ph b{font-size:30px}
+.qr-upload .up-tip{display:block;font-size:10px;color:var(--brand-d);padding:6px 0 8px;background:rgba(247,231,222,.9)}
+
+.chip-group{display:flex;gap:7px;flex-wrap:wrap}
+.chip{font-size:11.5px;padding:7px 13px;border:1px solid var(--line);border-radius:9px;background:var(--card);color:var(--ink2);cursor:pointer;transition:.15s}
+.chip.on{border-color:var(--brand);background:var(--brand-l);color:var(--brand-d);font-weight:700}
+
+.btn{width:100%;font-family:inherit;font-size:13.5px;font-weight:800;border:none;border-radius:12px;padding:13px;cursor:pointer;transition:.18s;display:flex;align-items:center;justify-content:center;gap:7px}
+.btn-p{background:var(--brand);color:#fff}
+.btn-p:hover{background:var(--brand-d)}
+.btn-p:disabled{background:#D9CFC7;cursor:not-allowed}
+.btn-g{background:var(--green);color:#fff}
+.btn-ghost{background:var(--card);color:var(--ink2);border:1px solid var(--line)}
+.btn-sm{padding:9px 13px;font-size:11.5px;width:auto;border-radius:9px}
+
+.agree{display:flex;gap:9px;align-items:flex-start;background:var(--bg);border-radius:10px;padding:11px;margin-bottom:13px;cursor:pointer}
+.agree .bx{width:17px;height:17px;border-radius:5px;border:1.5px solid var(--muted);flex:none;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;margin-top:1px}
+.agree.on .bx{background:var(--brand);border-color:var(--brand)}
+.agree p{font-size:10.5px;color:var(--ink2);line-height:1.6}
+.agree p b{color:var(--brand)}
+
+.sum-row{display:flex;justify-content:space-between;font-size:12px;padding:6px 0;color:var(--ink2)}
+.sum-row .v{font-weight:700;color:var(--ink)}
+.sum-total{display:flex;justify-content:space-between;align-items:center;border-top:1px dashed var(--line);margin-top:8px;padding-top:11px;font-size:12px}
+.sum-total b{font-size:22px;color:var(--brand)}
+
+.pay-box{text-align:center;padding:8px 0}
+.qr{width:172px;height:172px;margin:0 auto 12px;border:1px solid var(--line);border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.qr img{width:100%;height:100%;object-fit:contain}
+.qr .qr-ph{font-size:10px;color:var(--muted);text-align:center;padding:20px;line-height:1.7}
+.qr-ph b{display:block;font-size:28px;margin-bottom:6px}
+.pay-text{margin:14px 0 4px;padding:16px;background:var(--brand-l);border:1px dashed #E4BCA6;border-radius:12px;text-align:center}
+.pay-text .pt-label{font-size:11px;font-weight:800;color:var(--brand-d);margin-bottom:9px}
+.pay-text .pt-body{font-size:14px;font-weight:700;color:var(--ink);line-height:1.7;word-break:break-all;background:#fff;border-radius:9px;padding:12px}
+.pay-text .pt-hint{font-size:10.5px;color:var(--muted);margin-top:10px}
+.pay-box .amt{font-size:15px;color:var(--ink2);margin-bottom:4px}
+.pay-box .amt b{font-size:28px;color:var(--brand);font-weight:800}
+.pay-box .tip{font-size:11px;color:var(--muted);margin-top:10px;line-height:1.7}
+
+.empty{text-align:center;padding:50px 20px;color:var(--muted)}
+.empty .ico{font-size:42px;opacity:.5;margin-bottom:10px}
+.empty p{font-size:12.5px;line-height:1.7}
+
+.steps{display:flex;gap:5px;margin-bottom:16px}
+.steps .s{flex:1;height:4px;border-radius:3px;background:var(--line)}
+.steps .s.on{background:var(--brand)}
+
+.check-item{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:13px;margin-bottom:10px}
+.check-item .ch{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}
+.check-item .ch b{font-size:12.5px}
+.check-item .ch .done{font-size:10px;color:var(--green);font-weight:700}
+.photo-zone{height:78px;border:1.5px dashed var(--line);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--muted);font-size:10.5px;cursor:pointer;background:var(--bg);position:relative;overflow:hidden}
+.photo-zone .pico{font-size:22px;margin-bottom:2px}
+.photo-zone.has{border-style:solid;border-color:var(--green);background:var(--green-l);color:var(--green-d)}
+.photo-zone .ts{position:absolute;bottom:4px;right:5px;font-size:8px;background:var(--green);color:#fff;padding:2px 5px;border-radius:4px}
+.photo-zone .emoji{font-size:32px}
+
+.report-photos{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:12px}
+.report-photos .ph{height:76px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#F3E3D4,#E8C4A5);position:relative}
+.report-photos .ph .e{font-size:26px}
+.report-photos .ph .t{position:absolute;bottom:3px;left:0;right:0;text-align:center;font-size:7.5px;color:var(--green-d);font-weight:700}
+.hashbox{background:var(--brand-l);border-radius:9px;padding:9px 10px;font-family:ui-monospace,monospace;font-size:9.5px;color:var(--brand-d);word-break:break-all;line-height:1.55;margin-bottom:10px}
+.hashbox b{display:block;font-family:inherit;font-size:10px;margin-bottom:3px;color:var(--brand)}
+
+.stars{display:flex;gap:6px;justify-content:center;margin:12px 0}
+.stars span{font-size:30px;color:var(--line);cursor:pointer;transition:.15s}
+.stars span.on{color:var(--gold)}
+
+.pet-ava{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#F6D9C4,#E6AE86);display:flex;align-items:center;justify-content:center;font-size:28px;flex:none}
+.pet-card{display:flex;gap:11px;align-items:center}
+.pet-card .pi b{font-size:14px;display:block}
+.pet-card .pi span{font-size:11px;color:var(--muted)}
+
+.data-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.data-box{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 7px;text-align:center}
+.data-box .v{font-size:20px;font-weight:800;color:var(--ink);line-height:1.2}
+.data-box .l{font-size:10px;color:var(--muted);margin-top:3px}
+.admin-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);font-size:12px}
+.admin-row:last-child{border-bottom:none}
+.admin-row .k{color:var(--ink2)}
+.admin-row .v{font-weight:700}
+.admin-nav{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.admin-nav div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 11px;cursor:pointer;transition:.18s}
+.admin-nav div:hover{border-color:var(--brand)}
+.admin-nav div .ico{font-size:20px;display:block;margin-bottom:5px}
+.admin-nav div b{font-size:12px}
+
+.toast{position:absolute;left:50%;bottom:78px;transform:translateX(-50%) translateY(10px);background:var(--ink);color:#fff;font-size:11.5px;padding:10px 16px;border-radius:9px;opacity:0;transition:.28s;pointer-events:none;z-index:50;white-space:nowrap;max-width:90%;overflow:hidden;text-overflow:ellipsis}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+.modal-mask{position:fixed;inset:0;background:rgba(30,25,22,.5);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadein .2s}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.modal{background:var(--card);border-radius:18px;width:100%;max-width:380px;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.modal-h{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.modal-h b{font-size:15px;font-weight:800}
+.modal-h .x{font-size:20px;color:var(--muted);cursor:pointer;line-height:1}
+.modal-b{padding:16px 18px}
+.modal-f{padding:0 18px 18px}
+
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="layout">
+    <div class="side-info">
+      <div class="side-brand">
+        <div class="side-logo">🐾</div>
+        <div>
+          <h2>安心爪</h2>
+          <p>可验证的宠物照护平台</p>
+        </div>
+      </div>
+      <div class="side-block">
+        <h3>这是第一阶段可用的真网站</h3>
+        <p>纯前端实现，数据存在你自己的浏览器里（localStorage），无需服务器和数据库。部署到任意静态托管即可营业。</p>
+      </div>
+      <div class="side-block">
+        <h3>完整业务流程</h3>
+        <ul class="side-list">
+          <li><span>1</span>消费者选服务、挑服务者、下单</li>
+          <li><span>2</span>微信收款码支付（阶段一合规方式）</li>
+          <li><span>3</span>服务者接单、上门五步打卡</li>
+          <li><span>4</span>自动生成图文报告 + 哈希存证</li>
+          <li><span>5</span>消费者确认、评价、信用更新</li>
+        </ul>
+      </div>
+      <div class="side-block side-tip">
+        <h3>收款码怎么配（3 步）</h3>
+        <p><b>①</b> 点右侧手机顶上的「管理后台」<br><b>②</b> 在手机里点「系统设置 → 收款码设置」<br><b>③</b> 选一张你保存好的微信收款码图片，自动填好，点保存。</p>
+      </div>
+      <div class="side-block side-warn">
+        <h3>数据保存在本机</h3>
+        <p>清理浏览器数据会清空订单。正式营业前请接后端存储，或定期导出备份（管理后台有导出按钮）。</p>
+      </div>
+    </div>
+
+    <div class="device-wrap">
+      <div class="role-guide">👇 三个端在这里切换 · 配收款码点「管理后台」</div>
+      <div class="role-bar">
+        <button class="role-btn active" data-role="consumer">消费者端</button>
+        <button class="role-btn" data-role="worker">服务者端</button>
+        <button class="role-btn" data-role="admin">管理后台 ⚙️</button>
+      </div>
+      <div class="phone">
+        <div class="screen">
+          <div class="statusbar">
+            <span>9:41</span>
+            <span class="sb-r"><span class="signal">▮▮▮</span><span>●●●</span><span class="battery">▰▰▰</span></span>
+          </div>
+          <div id="app-header" class="app-header"></div>
+          <div id="app-body" class="app-body"></div>
+          <div id="app-tabbar" class="tabbar"></div>
+          <div id="toast" class="toast"></div>
+        </div>
+      </div>
+      <div class="device-caption">手机端预览 · 可点击操作完整流程</div>
+    </div>
+  </div>
+
+  <div id="modal-root"></div>
+</div>
+<script>
+/* 安心爪 · 第一阶段可用网站
+   纯前端实现，数据存 localStorage，无需服务器即可跑通完整业务流程 */
+
+/* ============ 数据层 ============ */
+const DB_KEY = 'anxinzhua_db_v1';
+
+function seedDB(){
+  return {
+    config:{ qrUrl:'', qrText:'', platformRate:0.18, shopName:'安心爪宠物照护' },
+    pets:[
+      {id:'p1',name:'团子',type:'布偶猫',age:'3岁',health:'健康 · 无慢性病',feed:'每日2次 · 定点定量',temper:'怕生 · 喜欢高处',emoji:'🐱'},
+      {id:'p2',name:'可乐',type:'柯基',age:'2岁',health:'健康 · 肠胃敏感',feed:'每日2次 · 早晚遛',temper:'亲人 · 爱撒娇',emoji:'🐶'}
+    ],
+    workers:[
+      {id:'w1',name:'李雨桐',initial:'李',color:'#1F6E5C',credit:98,serves:126,repurchase:82,rating:4.9,tags:['猫照护','应急处理','动物医学背景'],bio:'动物医学专业，5年猫照护经验，擅长老年猫与应激猫照护。每次服务五张实拍+详细日报。'},
+      {id:'w2',name:'张浩',initial:'张',color:'#C15B36',credit:95,serves:88,repurchase:74,rating:4.8,tags:['上门喂养','狗狗遛放','准时守约'],bio:'本地生活服务从业者，时间灵活，熟悉各小区路况。服务认真细致，响应快。'},
+      {id:'w3',name:'王雪',initial:'王',color:'#B9882F',credit:92,serves:64,repurchase:70,rating:4.7,tags:['家庭寄养','多宠家庭','耐心细致'],bio:'自家养猫5年，家里有独立寄养房间，全天监控可查。适合短期寄养需求。'}
+    ],
+    services:[
+      {id:'s1',name:'上门喂猫',icon:'🐱',price:49,unit:'/次',desc:'上门喂食、铲砂、陪玩，五张实拍+日报',needWorker:true},
+      {id:'s2',name:'家庭寄养',icon:'🏠',price:80,unit:'/天',desc:'家庭式寄养，独立空间，全天监控',needWorker:true},
+      {id:'s3',name:'上门遛狗',icon:'🦮',price:39,unit:'/次',desc:'按约定时间上门遛放，含排便清理',needWorker:true},
+      {id:'s4',name:'宠物洗护',icon:'🛁',price:68,unit:'/次',desc:'合作门店洗护，全程留痕',needWorker:false}
+    ],
+    orders:[],
+    reviews:[]
+  };
+}
+
+function loadDB(){
+  try{
+    const raw = localStorage.getItem(DB_KEY);
+    if(!raw){ const d=seedDB(); localStorage.setItem(DB_KEY,JSON.stringify(d)); return d; }
+    const d = JSON.parse(raw);
+    // 兼容旧结构补全
+    const s = seedDB();
+    for(const k in s){ if(d[k]===undefined) d[k]=s[k]; }
+    return d;
+  }catch(e){ console.warn('读取本地数据失败，使用默认数据',e); return seedDB(); }
+}
+let DB = loadDB();
+function saveDB(){ try{ localStorage.setItem(DB_KEY,JSON.stringify(DB)); }catch(e){ toast('保存失败：本地存储空间可能已满'); } }
+
+/* ============ 全局状态 ============ */
+const S = {
+  role:'consumer',
+  tab:{consumer:'home',worker:'tasks',admin:'overview'},
+  view:null,          // 详情视图
+  selectedService:null,
+  selectedWorker:null,
+  draft:{petId:'',date:'',time:'19:00',address:'',note:''},
+  agree:false,
+  starFilter:'all',
+  orderFilter:'all',
+  checkinDraft:{},
+  rating:5,
+  payOrderId:null,
+  editingPet:null
+};
+
+/* ============ 工具 ============ */
+const $ = s => document.querySelector(s);
+const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(msg){
+  const t=$('#toast'); if(!t) return;
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(t._tm); t._tm=setTimeout(()=>t.classList.remove('show'),2200);
+}
+function money(n){ return '¥'+Number(n||0).toFixed(0); }
+function orderStatus(s){
+  const map={wait:['待支付','st-wait'],paid:['待服务','st-paid'],serving:['服务中','st-serving'],report:['待确认','st-report'],done:['已完成','st-done']};
+  return map[s]||['未知','st-wait'];
+}
+function hashStr(str){
+  let h=0x811c9dc5;
+  for(let i=0;i<str.length;i++){ h^=str.charCodeAt(i); h=Math.imul(h,0x01000193); }
+  return (h>>>0).toString(16).padStart(8,'0');
+}
+function genHash(order){
+  const raw = order.id+order.petName+order.serviceName+(order.workerName||'')+(order.checkin?JSON.stringify(order.checkin.photos):'')+Date.now();
+  const a=hashStr(raw), b=hashStr(raw.split('').reverse().join('')+'anxinzhua'), c=hashStr(a+b);
+  return `0x${a}${b}${c}`;
+}
+function nextId(){ return 'AZ'+Date.now().toString().slice(-8); }
+function fmtDate(d){ if(!d) return ''; const p=d.split('-'); return p.length===3?`${p[1]}月${p[2]}日`:d; }
+function petById(id){ return DB.pets.find(p=>p.id===id); }
+function workerById(id){ return DB.workers.find(w=>w.id===id); }
+function orderById(id){ return DB.orders.find(o=>o.id===id); }
+function serviceById(id){ return DB.services.find(s=>s.id===id); }
+
+/* ============ 图标 ============ */
+const ICONS={
+  home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>',
+  order:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>',
+  pet:'<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="7" cy="8" r="2"/><circle cx="12" cy="6" r="2"/><circle cx="17" cy="8" r="2"/><circle cx="19" cy="13" r="1.7"/><path d="M12 10c-3.5 0-6 3-6 5.5 0 2 1.6 3.5 3.6 3.5 1 0 1.6-.5 2.4-.5s1.4.5 2.4.5c2 0 3.6-1.5 3.6-3.5 0-2.5-2.5-5.5-6-5.5z"/></svg>',
+  me:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>',
+  task:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 10l2 2 4-4M8 16h8"/></svg>',
+  money:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M8 9h8M12 7v10M9 14h6"/></svg>',
+  admin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>'
+};
+
+/* ============ 渲染入口 ============ */
+function render(){
+  renderHeader();
+  renderTabbar();
+  renderBody();
+}
+function renderHeader(){
+  let title='', sub='', right='';
+  if(S.view){ title=viewTitle(); }
+  else if(S.role==='consumer'){
+    const t=S.tab.consumer;
+    title = t==='home'?'安心爪':t==='orders'?'我的订单':t==='pets'?'宠物档案':'我的';
+    sub = t==='home'?'可验证的宠物照护':'';
+  } else if(S.role==='worker'){
+    const t=S.tab.worker;
+    title = t==='tasks'?'任务大厅':t==='myservice'?'我的服务':t==='income'?'收入明细':'服务者中心';
+  } else {
+    const t=S.tab.admin;
+    title = t==='overview'?'管理后台':t==='orders'?'订单管理':t==='workers'?'服务者管理':'系统设置';
+  }
+  const backBtn = S.view?`<button class="back-btn" data-act="back">‹</button>`:'';
+  $('#app-header').innerHTML=`<div class="hd-row">${backBtn}<div><h3>${title}</h3>${sub?`<span class="sub">${sub}</span>`:''}</div>${right?`<span class="right">${right}</span>`:''}</div>`;
+}
+function viewTitle(){
+  const v=S.view;
+  if(v.name==='service') return serviceById(v.id)?.name||'服务详情';
+  if(v.name==='checkout') return '确认订单';
+  if(v.name==='pay') return '支付';
+  if(v.name==='order') return '订单详情';
+  if(v.name==='checkin') return '服务打卡';
+  if(v.name==='report') return '照护报告';
+  if(v.name==='settings-qr') return '收款码设置';
+  if(v.name==='allorders') return '全部订单';
+  return '详情';
+}
+function renderTabbar(){
+  let tabs=[];
+  if(S.role==='consumer') tabs=[
+    ['home','首页','home'],['orders','订单','order'],['pets','宠物','pet'],['me','我的','me']
+  ];
+  else if(S.role==='worker') tabs=[
+    ['tasks','任务','task'],['myservice','服务','order'],['income','收入','money'],['wme','我的','me']
+  ];
+  else tabs=[
+    ['overview','概览','admin'],['orders','订单','order'],['workers','服务者','me'],['settings','设置','me']
+  ];
+  const cur = S.view?null:(S.tab[S.role]);
+  $('#app-tabbar').innerHTML = tabs.map(([k,label,ico])=>`<div class="tb ${cur===k?'on':''}" data-act="tab" data-tab="${k}"><div class="ti">${ICONS[ico]}</div>${label}</div>`).join('');
+}
+function renderBody(){
+  let html='';
+  if(S.view) html = renderView();
+  else if(S.role==='consumer') html = renderConsumer();
+  else if(S.role==='worker') html = renderWorker();
+  else html = renderAdmin();
+  $('#app-body').innerHTML = html;
+  $('#app-body').scrollTop=0;
+  afterRender();
+}
+function afterRender(){ /* 预留：视图渲染后钩子 */ }
+
+/* ============ 消费者端 ============ */
+function renderConsumer(){
+  const t=S.tab.consumer;
+  if(t==='home') return cHome();
+  if(t==='orders') return cOrders();
+  if(t==='pets') return cPets();
+  return cMe();
+}
+function cHome(){
+  const workers = DB.workers.slice(0,3).map(workerCard).join('');
+  return `<div class="body-pad">
+    <div class="hero">
+      <h2>把毛孩子交给靠谱的人</h2>
+      <p>每一次服务都可验证、可追溯、可追责</p>
+      <div class="hero-tags"><span>✓ 五张实拍留痕</span><span>✓ 电子协议</span><span>✓ 哈希存证</span><span>✓ 保险兜底</span></div>
+    </div>
+    <div class="trust-strip">
+      <div><b>${DB.workers.length}</b>认证服务者</div>
+      <div><b>98</b>平均信用分</div>
+      <div><b>100%</b>服务留痕</div>
+    </div>
+    <div class="sec-title">选择服务 <span class="more">首单立减10元 →</span></div>
+    <div class="svc-grid">${DB.services.map(s=>`<div class="svc" data-act="service" data-id="${s.id}"><span class="ico">${s.icon}</span><b>${s.name}</b><span>${s.desc.slice(0,8)}…</span><span class="price">${money(s.price)}${s.unit}</span></div>`).join('')}</div>
+    <div class="sec-title">推荐服务者 <span class="more">选人为主 · 看得见信用</span></div>
+    ${workers}
+    <div style="height:6px"></div>
+  </div>`;
+}
+function workerCard(w,withPick){
+  return `<div class="worker-card ${S.selectedWorker===w.id?'sel':''}" data-act="pick-worker" data-id="${w.id}">
+    <div class="wava" style="background:${w.color}">${w.initial}</div>
+    <div class="winfo">
+      <div class="n">${w.name} <span class="sc">信用 ${w.credit}</span></div>
+      <div class="meta">${w.serves} 次服务 · 评分 ${w.rating} · 复购 ${w.repurchase}%</div>
+      <div class="tags">${w.tags.map(t=>`<span>${t}</span>`).join('')}</div>
+    </div>
+    <div class="wcard-right">
+      <div class="rate"><b>${w.rating}</b> ★</div>
+      <div class="rep">${w.repurchase}% 复购</div>
+      ${withPick?`<button class="pick ${S.selectedWorker===w.id?'picked':''}" data-act="pick-worker" data-id="${w.id}">${S.selectedWorker===w.id?'已选✓':'选TA'}</button>`:''}
+    </div>
+  </div>`;
+}
+function cOrders(){
+  const list = DB.orders.slice().reverse();
+  const filtered = S.orderFilter==='all'?list:list.filter(o=>o.status===S.orderFilter);
+  const chips=[['all','全部'],['wait','待支付'],['paid','待服务'],['serving','服务中'],['report','待确认'],['done','已完成']];
+  return `<div class="body-pad">
+    <div class="chip-group" style="margin-bottom:14px">${chips.map(([k,l])=>`<div class="chip ${S.orderFilter===k?'on':''}" data-act="ofilter" data-v="${k}">${l}</div>`).join('')}</div>
+    ${filtered.length?filtered.map(o=>{
+      const st=orderStatus(o.status);
+      return `<div class="order-card" data-act="open-order" data-id="${o.id}">
+        <div class="oc-top"><span class="id">订单 ${o.id}</span><span class="st ${st[1]}">${st[0]}</span></div>
+        <div class="oc-body"><div class="oc-pet">${o.petEmoji||'🐾'}</div><div class="t"><b>${o.serviceName}</b><span>${fmtDate(o.date)} ${o.time} · ${o.workerName||'待分配服务者'}</span></div><span class="amt">${money(o.amount)}</span></div>
+      </div>`;
+    }).join(''):`<div class="empty"><div class="ico">📋</div><p>还没有订单<br>去首页选个服务试试吧</p></div>`}
+  </div>`;
+}
+function cPets(){
+  return `<div class="body-pad">
+    ${DB.pets.map(p=>`<div class="card pet-card"><div class="pet-ava">${p.emoji}</div><div class="pi"><b>${p.name}</b><span>${p.type} · ${p.age}</span><span style="font-size:10px">${p.health}</span></div></div>`).join('')}
+    <button class="btn btn-ghost" data-act="add-pet">+ 添加宠物档案</button>
+    <div style="font-size:10.5px;color:var(--muted);line-height:1.7;margin-top:12px;padding:0 4px">宠物档案越完整，服务者越懂你的毛孩子。健康情况、喂食偏好、性格特点都会随订单一起交给服务者。</div>
+  </div>`;
+}
+function cMe(){
+  const done=DB.orders.filter(o=>o.status==='done').length;
+  return `<div class="body-pad">
+    <div class="card" style="display:flex;align-items:center;gap:12px">
+      <div class="wava" style="background:var(--brand);width:52px;height:52px">我</div>
+      <div><b style="font-size:15px">宠主用户</b><div style="font-size:11px;color:var(--muted)">已服务 ${done} 次 · 信任等级 优质</div></div>
+    </div>
+    <div class="data-grid">
+      <div class="data-box"><div class="v">${DB.orders.length}</div><div class="l">全部订单</div></div>
+      <div class="data-box"><div class="v">${done}</div><div class="l">已完成</div></div>
+      <div class="data-box"><div class="v">${DB.pets.length}</div><div class="l">宠物档案</div></div>
+    </div>
+    <div class="sec-title">信任与保障</div>
+    <div class="card">
+      <div class="admin-row"><span class="k">📝 电子协议</span><span class="v" style="color:var(--green)">每单必签</span></div>
+      <div class="admin-row"><span class="k">📷 五张实拍</span><span class="v" style="color:var(--green)">全程留痕</span></div>
+      <div class="admin-row"><span class="k">🔗 哈希存证</span><span class="v" style="color:var(--green)">不可篡改</span></div>
+      <div class="admin-row"><span class="k">🛡️ 宠物保险</span><span class="v" style="color:var(--gold)">待接入</span></div>
+    </div>
+    <div class="sec-title">照护日记</div>
+    ${DB.orders.filter(o=>o.report).length?DB.orders.filter(o=>o.report).map(o=>`<div class="order-card" data-act="open-report" data-id="${o.id}"><div class="oc-top"><span class="id">${fmtDate(o.date)} · ${o.petName}</span><span class="st st-done">已存证</span></div><div class="oc-body"><div class="oc-pet">${o.petEmoji}</div><div class="t"><b>${o.serviceName}照护报告</b><span>${o.workerName} · 五张实拍+日报</span></div></div></div>`).join(''):`<div class="card" style="text-align:center;color:var(--muted);font-size:11.5px;padding:22px">完成服务后，每次照护都会汇入这里的成长日记</div>`}
+  </div>`;
+}
+
+/* ============ 视图（消费者流程） ============ */
+function renderView(){
+  const v=S.view;
+  if(v.name==='service') return vService(v.id);
+  if(v.name==='checkout') return vCheckout();
+  if(v.name==='pay') return vPay(v.id);
+  if(v.name==='order') return vOrder(v.id);
+  if(v.name==='checkin') return vCheckin(v.id);
+  if(v.name==='report') return vReport(v.id);
+  if(v.name==='settings-qr') return vQrSettings();
+  if(v.name==='allorders') return cOrders();
+  return '';
+}
+function vService(id){
+  const s=serviceById(id); if(!s) return '';
+  return `<div class="body-pad">
+    <div class="card" style="text-align:center;padding:22px">
+      <div style="font-size:46px">${s.icon}</div>
+      <h2 style="font-size:18px;margin-top:8px">${s.name}</h2>
+      <p style="font-size:12px;color:var(--muted);margin-top:6px">${s.desc}</p>
+      <div style="font-size:24px;color:var(--brand);font-weight:800;margin-top:10px">${money(s.price)}<span style="font-size:12px;color:var(--muted);font-weight:400">${s.unit}</span></div>
+    </div>
+    <div class="sec-title">服务包含</div>
+    <div class="card">
+      <div class="check-item" style="border:none;padding:7px 0"><div style="font-size:12px">✓ 服务前电子协议，责任清晰</div></div>
+      <div class="check-item" style="border:none;padding:7px 0"><div style="font-size:12px">✓ 上门五张时间戳实拍</div></div>
+      <div class="check-item" style="border:none;padding:7px 0"><div style="font-size:12px">✓ 服务完成图文日报</div></div>
+      <div class="check-item" style="border:none;padding:7px 0"><div style="font-size:12px">✓ 凭证哈希存证，可验证</div></div>
+    </div>
+    <div class="sec-title">挑选服务者 <span class="more">信用透明 · 你说了算</span></div>
+    ${DB.workers.map(w=>workerCard(w,true)).join('')}
+    <button class="btn btn-p" data-act="to-checkout" data-id="${s.id}" ${!S.selectedWorker?'disabled':''}>${S.selectedWorker?'下一步 · 填写需求':'请先选择一位服务者'}</button>
+  </div>`;
+}
+function vCheckout(){
+  const s=serviceById(S.selectedService), w=workerById(S.selectedWorker);
+  if(!s||!w) return '';
+  const d=S.draft;
+  const days=[]; const today=new Date();
+  for(let i=0;i<7;i++){
+    const dt=new Date(today.getTime()+i*86400000);
+    const val=`${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;
+    days.push({val,label:i===0?'今天':i===1?'明天':`${dt.getMonth()+1}/${dt.getDate()}`});
+  }
+  return `<div class="body-pad">
+    <div class="steps"><div class="s on"></div><div class="s on"></div><div class="s"></div></div>
+    <div class="card">
+      <div class="sec-title" style="margin-top:0">服务信息</div>
+      <div class="sum-row"><span class="k">服务项目</span><span class="v">${s.icon} ${s.name}</span></div>
+      <div class="sum-row"><span class="k">指定服务者</span><span class="v">${w.name} · 信用 ${w.credit}</span></div>
+      <div class="sum-row"><span class="k">单价</span><span class="v">${money(s.price)}${s.unit}</span></div>
+    </div>
+    <div class="card">
+      <div class="sec-title" style="margin-top:0">选择宠物</div>
+      <div class="chip-group">${DB.pets.map(p=>`<div class="chip ${d.petId===p.id?'on':''}" data-act="dpet" data-id="${p.id}">${p.emoji} ${p.name}</div>`).join('')}</div>
+      <div class="field" style="margin-top:13px"><label>服务日期</label>
+        <div class="chip-group">${days.map(x=>`<div class="chip ${d.date===x.val?'on':''}" data-act="ddate" data-v="${x.val}">${x.label}</div>`).join('')}</div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>时间</label><input type="time" id="f-time" value="${esc(d.time)}"></div>
+        <div class="field"><label>份数/天数</label><input type="number" id="f-qty" value="1" min="1" max="30"></div>
+      </div>
+      <div class="field"><label>服务地址</label><input type="text" id="f-addr" placeholder="小区 / 楼栋 / 门牌号" value="${esc(d.address)}"></div>
+      <div class="field"><label>备注（喂食要求、门禁密码等）</label><textarea id="f-note" placeholder="例如：猫粮在厨房柜子第二层，每天早晚各一次">${esc(d.note)}</textarea></div>
+    </div>
+    <div class="agree ${S.agree?'on':''}" data-act="agree">
+      <div class="bx">${S.agree?'✓':''}</div>
+      <p>我已阅读并同意<b>《宠物照护服务电子协议》</b>：确认宠物健康告知属实，明确喂食要求与应急联系人，约定伤病责任划分。这是保护双方的关键一步。</p>
+    </div>
+    <div class="card">
+      <div class="sum-row"><span class="k">服务费用</span><span class="v" id="sum-base">${money(s.price)}</span></div>
+      <div class="sum-row"><span class="k">首单优惠</span><span class="v" style="color:var(--green)">-¥10</span></div>
+      <div class="sum-total"><span>实付</span><b id="sum-total">${money(Math.max(0,s.price-10))}</b></div>
+    </div>
+    <button class="btn btn-p" data-act="submit-order">提交订单并支付</button>
+  </div>`;
+}
+function collectDraft(){
+  S.draft.time = $('#f-time')?.value||S.draft.time;
+  S.draft.qty = parseInt($('#f-qty')?.value||'1',10);
+  S.draft.address = $('#f-addr')?.value||'';
+  S.draft.note = $('#f-note')?.value||'';
+  const s=serviceById(S.selectedService);
+  const qty=S.draft.qty||1, price=Math.max(0,(s?.price||0)*qty-10);
+  const bt=$('#sum-total'); if(bt) bt.textContent=money(price);
+  const bb=$('#sum-base'); if(bb) bb.textContent=money((s?.price||0)*qty);
+}
+function vPay(id){
+  const o=orderById(id); if(!o) return '';
+  const qr=DB.config.qrUrl, txt=DB.config.qrText;
+  let payBlock;
+  if(qr){
+    payBlock=`<div class="qr"><img src="${esc(qr)}" alt="收款码"></div><div class="tip">请用微信扫码支付<br>付款后点下方按钮</div>`;
+  }else if(txt){
+    payBlock=`<div class="pay-text"><div class="pt-label">按以下方式付款</div><div class="pt-body">${esc(txt)}</div><div class="pt-hint">付款后点下方按钮，服务者会收到接单提醒</div></div>`;
+  }else{
+    payBlock=`<div class="qr"><div class="qr-ph"><b>▦</b>尚未配置收款方式<br>请到管理后台 → 收款码设置<br>上传收款码或填写收款说明</div></div>`;
+  }
+  return `<div class="body-pad">
+    <div class="steps"><div class="s on"></div><div class="s on"></div><div class="s on"></div></div>
+    <div class="card pay-box">
+      <div class="amt">应付金额 <b>${money(o.amount)}</b></div>
+      ${payBlock}
+      <button class="btn btn-p" style="margin-top:16px" data-act="mark-paid" data-id="${o.id}">我已完成支付</button>
+      <button class="btn btn-ghost btn-sm" style="margin-top:9px;width:100%" data-act="later-pay">稍后再付，返回订单</button>
+    </div>
+    <div class="note-box warn" style="margin-top:6px">第一阶段方式：客户直接付给你，钱不经过平台，不碰"二清"红线。服务者报酬由你线下结算。</div>
+  </div>`;
+}
+function vOrder(id){
+  const o=orderById(id); if(!o) return `<div class="empty">订单不存在</div>`;
+  const st=orderStatus(o.status);
+  const w=o.workerId?workerById(o.workerId):null;
+  const flow=[['wait','已下单'],['paid','已支付'],['serving','服务中'],['report','报告生成'],['done','已完成']];
+  const idx=flow.findIndex(x=>x[0]===o.status);
+  return `<div class="body-pad">
+    <div class="card">
+      <div class="oc-top"><span class="id">订单 ${o.id}</span><span class="st ${st[1]}">${st[0]}</span></div>
+      <div class="oc-body"><div class="oc-pet">${o.petEmoji}</div><div class="t"><b>${o.serviceName}</b><span>${o.petName} · ${fmtDate(o.date)} ${o.time}</span></div><span class="amt">${money(o.amount)}</span></div>
+      <div style="margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)">
+        <div class="sum-row"><span class="k">服务者</span><span class="v">${w?`${w.name} · 信用 ${w.credit}`:'待分配'}</span></div>
+        <div class="sum-row"><span class="k">地址</span><span class="v" style="max-width:210px;text-align:right">${esc(o.address||'-')}</span></div>
+        <div class="sum-row"><span class="k">备注</span><span class="v" style="max-width:210px;text-align:right">${esc(o.note||'无')}</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="sec-title" style="margin-top:0">服务进度</div>
+      ${flow.map((x,i)=>`<div style="display:flex;gap:10px;align-items:center;padding:7px 0;font-size:11.5px;color:${i<=idx?'var(--ink)':'var(--muted)'}"><span style="width:20px;height:20px;border-radius:50%;background:${i<=idx?'var(--green)':'var(--line)'};color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;flex:none">${i<=idx?'✓':i+1}</span>${x[1]}</div>`).join('')}
+    </div>
+    ${o.status==='wait'?`<button class="btn btn-p" data-act="go-pay" data-id="${o.id}">去支付 ${money(o.amount)}</button>`:''}
+    ${o.status==='report'?`<button class="btn btn-p" data-act="open-report" data-id="${o.id}">查看照护报告并确认</button>`:''}
+    ${o.status==='done'?`<button class="btn btn-ghost" data-act="open-report" data-id="${o.id}">查看照护报告</button>`:''}
+    ${o.status==='report'||o.status==='done'?`<div class="card" style="margin-top:12px">
+      <div class="sec-title" style="margin-top:0">服务评价</div>
+      ${o.review?`<div style="font-size:12px;color:var(--ink2)">${'★'.repeat(o.review.stars)} · ${esc(o.review.text||'')}</div>`:`<div class="stars" id="stars">${[1,2,3,4,5].map(i=>`<span class="${i<=S.rating?'on':''}" data-act="star" data-v="${i}">★</span>`).join('')}</div>
+      <textarea id="review-text" class="field" style="width:100%;font-family:inherit;font-size:12px;padding:10px;border:1px solid var(--line);border-radius:10px;min-height:56px" placeholder="说说这次服务体验…"></textarea>
+      <button class="btn btn-g" style="margin-top:9px" data-act="submit-review" data-id="${o.id}">提交评价</button>`}
+    </div>`:''}
+  </div>`;
+}
+function vReport(id){
+  const o=orderById(id); if(!o||!o.report) return '<div class="empty">报告尚未生成</div>';
+  const r=o.report;
+  return `<div class="body-pad">
+    <div class="card" style="background:var(--green-l);border-color:#C9E2D7">
+      <div style="display:flex;align-items:center;gap:8px"><span style="font-size:22px">✅</span><div><b style="font-size:13px;color:var(--green-d)">照护报告已生成</b><div style="font-size:10.5px;color:var(--green)">${r.time} · ${o.workerName} 提交</div></div></div>
+    </div>
+    <div class="card">
+      <div class="sec-title" style="margin-top:0">五张实拍 · 时间戳留痕</div>
+      <div class="report-photos">${r.photos.map(p=>`<div class="ph"><div class="e">${p.emoji}</div><div class="t">${p.label} ${p.time.slice(-5)}</div></div>`).join('')}</div>
+      <div class="sec-title">照护日报</div>
+      <div style="font-size:12px;color:var(--ink2);line-height:1.8;white-space:pre-wrap">${esc(r.note||'（无补充）')}</div>
+      <div class="hashbox" style="margin-top:14px"><b>🔗 存证哈希（不可篡改）</b>${esc(r.hash)}</div>
+      <div style="font-size:10px;color:var(--muted);line-height:1.6">该哈希由服务内容、时间戳、服务者信息共同生成。任何修改都会导致哈希变化，可用于验证凭证完整性。</div>
+    </div>
+    ${o.status==='report'?`<button class="btn btn-g" data-act="confirm-done" data-id="${o.id}">确认服务完成</button>`:''}
+  </div>`;
+}
+
+/* ============ 服务者端 ============ */
+function renderWorker(){
+  const t=S.tab.worker;
+  if(t==='tasks') return wTasks();
+  if(t==='myservice') return wMyService();
+  if(t==='income') return wIncome();
+  return wMe();
+}
+function wTasks(){
+  const me=DB.workers[0];
+  // 第一阶段：服务者端扮演当前运营者，可认领所有已支付的待服务单
+  const avail=DB.orders.filter(o=>o.status==='paid');
+  return `<div class="body-pad">
+    <div class="card" style="background:var(--green-l);border-color:#C9E2D7">
+      <div style="display:flex;align-items:center;gap:11px"><div class="wava" style="background:${me.color}">${me.initial}</div><div><b style="font-size:13.5px">${me.name}</b><div style="font-size:10.5px;color:var(--green)">信用分 ${me.credit} · 已服务 ${me.serves} 次</div></div></div>
+    </div>
+    <div class="sec-title">可接任务 <span class="more">${avail.length} 个待接</span></div>
+    ${avail.length?avail.map(o=>`<div class="card">
+      <div class="oc-top"><span class="id">${o.id} · ${fmtDate(o.date)}</span><span class="st st-paid">待接单</span></div>
+      <div class="oc-body"><div class="oc-pet">${o.petEmoji}</div><div class="t"><b>${o.serviceName} · ${o.petName}</b><span>${o.time} · ${esc(o.address||'')}</span></div><span class="amt">${money(o.amount)}</span></div>
+      <button class="btn btn-g btn-sm" style="width:100%;margin-top:11px" data-act="accept" data-id="${o.id}">接下这单</button>
+    </div>`).join(''):`<div class="empty"><div class="ico">📭</div><p>暂时没有新任务<br>消费者支付后会出现在这里</p></div>`}
+    <div class="sec-title">接单说明</div>
+    <div class="card" style="font-size:11.5px;color:var(--ink2);line-height:1.8">接单后请按约定时间上门，完成五步打卡并填写日报。服务记录会累积为你的信用资产，信用越高，获得的派单和提成越高。</div>
+  </div>`;
+}
+function wMyService(){
+  const me=DB.workers[0];
+  const list=DB.orders.filter(o=>o.workerId===me.id&&o.status!=='wait'&&o.status!=='paid');
+  return `<div class="body-pad">
+    ${list.length?list.slice().reverse().map(o=>{
+      const st=orderStatus(o.status);
+      return `<div class="order-card" data-act="open-order" data-id="${o.id}">
+        <div class="oc-top"><span class="id">${o.id} · ${o.petName}</span><span class="st ${st[1]}">${st[0]}</span></div>
+        <div class="oc-body"><div class="oc-pet">${o.petEmoji}</div><div class="t"><b>${o.serviceName}</b><span>${fmtDate(o.date)} ${o.time}</span></div><span class="amt">${money(o.amount)}</span></div>
+        ${o.status==='serving'?`<button class="btn btn-p btn-sm" style="width:100%;margin-top:10px" data-act="go-checkin" data-id="${o.id}">开始服务打卡</button>`:''}
+        ${o.status==='report'?`<div style="font-size:10.5px;color:var(--muted);margin-top:8px">报告已提交，等待宠主确认</div>`:''}
+      </div>`;
+    }).join(''):`<div class="empty"><div class="ico">🐾</div><p>还没有进行中的服务<br>去任务大厅接一单吧</p></div>`}
+  </div>`;
+}
+function wIncome(){
+  const me=DB.workers[0];
+  const mine=DB.orders.filter(o=>o.workerId===me.id&&(o.status==='report'||o.status==='done'));
+  const total=mine.reduce((s,o)=>s+o.amount,0);
+  const myShare=Math.round(total*0.75);
+  return `<div class="body-pad">
+    <div class="card" style="background:var(--ink);border-color:var(--ink);color:#fff">
+      <div style="font-size:11px;color:#B8C4CA">可提现收入（模拟）</div>
+      <div style="font-size:31px;font-weight:800;color:#7FD1B0;margin:6px 0">${money(myShare)}</div>
+      <div style="font-size:10.5px;color:#B8C4CA">按服务者提成 75% 计算 · 阶段二起由你线下结算</div>
+    </div>
+    <div class="data-grid">
+      <div class="data-box"><div class="v">${mine.length}</div><div class="l">完成单数</div></div>
+      <div class="data-box"><div class="v">${me.credit}</div><div class="l">信用分</div></div>
+      <div class="data-box"><div class="v">${me.rating}</div><div class="l">服务评分</div></div>
+    </div>
+    <div class="sec-title">收入明细</div>
+    ${mine.length?mine.slice().reverse().map(o=>`<div class="admin-row"><span class="k">${fmtDate(o.date)} · ${o.serviceName}</span><span class="v" style="color:var(--green)">+${money(Math.round(o.amount*0.75))}</span></div>`).join(''):`<div class="card" style="text-align:center;color:var(--muted);font-size:11.5px;padding:20px">完成服务后显示收入明细</div>`}
+    <div class="note-box warn" style="margin-top:14px">第一阶段收入由你线下结算给服务者。上平台收付通后，可通过官方分账自动结算，服务者提成 75%（五星 80%）。</div>
+  </div>`;
+}
+function wMe(){
+  const me=DB.workers[0];
+  return `<div class="body-pad">
+    <div class="card" style="text-align:center;padding:20px"><div class="wava" style="background:${me.color};width:60px;height:60px;margin:0 auto;font-size:20px">${me.initial}</div><b style="font-size:16px;display:block;margin-top:9px">${me.name}</b><div style="font-size:11px;color:var(--muted)">认证服务者</div></div>
+    <div class="card">
+      <div class="sec-title" style="margin-top:0">我的信用档案</div>
+      <div class="data-grid">
+        <div class="data-box"><div class="v" style="color:var(--green)">${me.credit}</div><div class="l">信用分</div></div>
+        <div class="data-box"><div class="v">${me.serves}</div><div class="l">服务次数</div></div>
+        <div class="data-box"><div class="v">${me.repurchase}%</div><div class="l">复购率</div></div>
+      </div>
+      <div style="font-size:11px;color:var(--ink2);line-height:1.75">${me.bio}</div>
+      <div class="winfo tags" style="margin-top:9px">${me.tags.map(t=>`<span style="font-size:9px;background:var(--bg);padding:2px 6px;border-radius:5px;margin-right:4px">${t}</span>`).join('')}</div>
+    </div>
+    <div class="card" style="font-size:11.5px;color:var(--ink2);line-height:1.8"><b>信用规则：</b>信用分由真实服务数据累积——打卡完整率、日报质量、宠主评价、复购率。信用越高，越容易被消费者选中，提成也从 75% 升到 80%。这是你带走不走的资产。</div>
+  </div>`;
+}
+
+/* ============ 服务打卡 ============ */
+const CHECK_STEPS=[
+  {key:'door',label:'进门',emoji:'🚪'},
+  {key:'food',label:'食盆',emoji:'🥣'},
+  {key:'litter',label:'猫砂',emoji:'🪣'},
+  {key:'pet',label:'宠物状态',emoji:'🐱'},
+  {key:'out',label:'出门',emoji:'🔒'}
+];
+function vCheckin(id){
+  const o=orderById(id); if(!o) return '';
+  const d=S.checkinDraft[id]||{};
+  return `<div class="body-pad">
+    <div class="card" style="background:var(--green-l);border-color:#C9E2D7"><div style="font-size:12px;color:var(--green-d)">正在服务：<b>${o.serviceName} · ${o.petName}</b><br><span style="font-size:10.5px">${fmtDate(o.date)} ${o.time} · ${esc(o.address||'')}</span></div></div>
+    <div class="sec-title">五步打卡 <span class="more">每张带时间戳</span></div>
+    ${CHECK_STEPS.map(st=>`<div class="check-item">
+      <div class="ch"><b>${st.emoji} ${st.label}</b><span class="done">${d[st.key]?'✓ 已完成':''}</span></div>
+      <div class="photo-zone ${d[st.key]?'has':''}" data-act="photo" data-id="${id}" data-key="${st.key}">
+        ${d[st.key]?`<div class="emoji">${st.emoji}</div><span class="ts">${d[st.key].time.slice(11,16)}</span>`:`<div><div class="pico">📷</div>点击拍照留痕</div>`}
+      </div>
+    </div>`).join('')}
+    <div class="card">
+      <div class="field"><label>照护日报</label><textarea id="check-note" placeholder="记录宠物状态、进食情况、有无异常…" style="width:100%;font-family:inherit;font-size:12px;padding:10px;border:1px solid var(--line);border-radius:10px;min-height:80px">${esc(d.note||'')}</textarea></div>
+    </div>
+    <button class="btn btn-g" data-act="submit-checkin" data-id="${id}">提交并完成服务</button>
+  </div>`;
+}
+
+/* ============ 管理后台 ============ */
+function renderAdmin(){
+  const t=S.tab.admin;
+  if(t==='overview') return aOverview();
+  if(t==='orders') return aOrders();
+  if(t==='workers') return aWorkers();
+  return aSettings();
+}
+function aOverview(){
+  const income=DB.orders.filter(o=>o.status!=='wait').reduce((s,o)=>s+o.amount,0);
+  return `<div class="body-pad">
+    <div class="data-grid">
+      <div class="data-box"><div class="v">${DB.orders.length}</div><div class="l">总订单</div></div>
+      <div class="data-box"><div class="v">${income}</div><div class="l">流水(元)</div></div>
+      <div class="data-box"><div class="v">${DB.workers.length}</div><div class="l">服务者</div></div>
+    </div>
+    <div class="sec-title">快捷入口</div>
+    <div class="admin-nav">
+      <div data-act="a-tab" data-v="orders"><span class="ico">📋</span><b>订单管理</b></div>
+      <div data-act="a-tab" data-v="workers"><span class="ico">👥</span><b>服务者管理</b></div>
+      <div data-act="a-view" data-v="settings-qr"><span class="ico">▦</span><b>收款码设置</b></div>
+      <div data-act="export"><span class="ico">💾</span><b>导出数据备份</b></div>
+    </div>
+    <div class="sec-title">近期订单</div>
+    ${DB.orders.length?DB.orders.slice(-4).reverse().map(o=>{const st=orderStatus(o.status);return `<div class="admin-row"><span class="k">${o.id} · ${o.petName}</span><span class="v" style="color:${o.status==='done'?'var(--green)':'var(--ink2)'}">${st[0]}</span></div>`}).join(''):`<div class="card" style="text-align:center;color:var(--muted);font-size:11.5px;padding:20px">还没有订单</div>`}
+    <div class="note-box warn" style="margin-top:14px"><b>第一阶段提醒：</b>你的角色是服务者本人，收自己的钱完全合法。前期让大学生/门店各自收款，你赚居间服务费，不要替别人代收款再分账。</div>
+  </div>`;
+}
+function aOrders(){
+  return `<div class="body-pad">
+    ${DB.orders.length?DB.orders.slice().reverse().map(o=>{const st=orderStatus(o.status);return `<div class="order-card" data-act="open-order" data-id="${o.id}"><div class="oc-top"><span class="id">${o.id} · ${fmtDate(o.date)}</span><span class="st ${st[1]}">${st[0]}</span></div><div class="oc-body"><div class="oc-pet">${o.petEmoji}</div><div class="t"><b>${o.serviceName} · ${o.petName}</b><span>${o.workerName||'待分配'} · ${esc(o.address||'')}</span></div><span class="amt">${money(o.amount)}</span></div></div>`}).join(''):`<div class="empty"><div class="ico">📋</div><p>暂无订单</p></div>`}
+  </div>`;
+}
+function aWorkers(){
+  return `<div class="body-pad">
+    ${DB.workers.map(w=>`<div class="card"><div style="display:flex;gap:11px;align-items:center"><div class="wava" style="background:${w.color}">${w.initial}</div><div style="flex:1"><b style="font-size:13.5px">${w.name}</b><div style="font-size:10.5px;color:var(--muted)">信用 ${w.credit} · ${w.serves}次服务 · 评分${w.rating}</div></div><span class="pill" style="font-size:10px;background:var(--green-l);color:var(--green);padding:3px 8px;border-radius:6px">已认证</span></div></div>`).join('')}
+    <div class="note-box good">8 项准入审核是这行的壁垒：身份核验、健康证明、背景核查、面试、培训、试单、服务规范考核、持续评分。评分低于 4.6 暂停派单，4.3 清退。</div>
+  </div>`;
+}
+function aSettings(){
+  return `<div class="body-pad">
+    <div class="sec-title" style="margin-top:0">收款配置</div>
+    <div class="card">
+      <div class="admin-row"><span class="k">收款方式</span><span class="v">微信经营收款码</span></div>
+      <div class="admin-row"><span class="k">当前状态</span><span class="v" style="color:${DB.config.qrUrl?'var(--green)':'var(--gold)'}">${DB.config.qrUrl?'已配置':'未配置'}</span></div>
+      <div class="admin-row"><span class="k">平台佣金</span><span class="v">${Math.round(DB.config.platformRate*100)}%（在30%上限内）</span></div>
+      <button class="btn btn-ghost btn-sm" style="width:100%;margin-top:12px" data-act="a-view" data-v="settings-qr">编辑收款码</button>
+    </div>
+    <div class="sec-title">数据管理</div>
+    <div class="card">
+      <button class="btn btn-ghost btn-sm" style="width:100%;margin-bottom:9px" data-act="export">导出数据备份（JSON）</button>
+      <button class="btn btn-ghost btn-sm" style="width:100%;color:var(--red)" data-act="reset">清空并重置演示数据</button>
+      <div style="font-size:10.5px;color:var(--muted);margin-top:10px;line-height:1.7">数据保存在当前浏览器 localStorage。换设备或清理浏览器会丢失。正式营业前请接后端存储。</div>
+    </div>
+  </div>`;
+}
+function vQrSettings(){
+  return `<div class="body-pad">
+    <div class="note-box" style="margin-bottom:12px;background:var(--green-l);border-color:#C9E2D7;color:var(--green-d)">
+      <b>第一阶段用「个人收款码」就够了</b><br>
+      你自己就是服务者、收自己的钱，个人码完全合规。经营收款码是微信按收款情况主动邀请开通的，申请不到很正常，不用纠结，先跑起来。
+    </div>
+    <div class="card">
+      <div class="field"><label>方式一：上传收款码图片（推荐）</label>
+        <label class="qr-upload" for="qr-file">
+          ${DB.config.qrUrl?`<img src="${esc(DB.config.qrUrl)}" alt="当前收款码">`:`<span class="up-ph"><b>＋</b><br>点击选择收款码图片</span>`}
+          <span class="up-tip">点击更换图片</span>
+        </label>
+        <input type="file" id="qr-file" accept="image/*" style="display:none">
+      </div>
+      <div style="font-size:10.5px;color:var(--muted);line-height:1.7;margin:10px 0 12px">选一张你手机里保存好的<b>微信收款码</b>图片（个人的也行），系统自动读入压缩并预览，不用找图床。获取路径：微信 → 我 → 服务 → 收付款 → 二维码收款 → 保存图片。</div>
+      <div class="field"><label>图片传不上去？用方式二：填收款说明文字</label>
+        <textarea id="qr-text" rows="2" placeholder="例如：加微信 wxid_xxx 转账，备注订单号；或 支付宝 138xxxx">${esc(DB.config.qrText||'')}</textarea>
+        <div style="font-size:10px;color:var(--muted);margin-top:5px;line-height:1.6">图片上传失败时，客户在支付页会看到这段文字，照样能付款给你。两种都填的话优先显示图片。</div>
+      </div>
+      <div class="field"><label>手动粘贴图片地址（可选，高级）</label><input type="text" id="qr-url" placeholder="https://…/收款码.png 或 data:image/…" value="${esc(DB.config.qrUrl)}"></div>
+      <button class="btn btn-p" data-act="save-qr">保存设置</button>
+    </div>
+    <div class="note-box warn">图片和说明文字只存在你这台设备的浏览器里，换设备要重新设置一次。第一阶段客户直接付给你，钱不经过平台，规避"二清"。等以后注册了个体户，可在微信里申请「经营收款码」升级（可开票、支持信用卡）。</div>
+  </div>`;
+}
+
+/* ============ 弹窗 ============ */
+function openModal(title,bodyHtml,footHtml){
+  $('#modal-root').innerHTML=`<div class="modal-mask" data-act="close-modal"><div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-h"><b>${title}</b><span class="x" data-act="close-modal">×</span></div>
+    <div class="modal-b">${bodyHtml}</div>
+    ${footHtml?`<div class="modal-f">${footHtml}</div>`:''}
+  </div></div>`;
+}
+function closeModal(){ $('#modal-root').innerHTML=''; }
+function petModal(){
+  openModal('添加宠物档案',`
+    <div class="field"><label>宠物名字</label><input id="np-name" placeholder="例如：团子"></div>
+    <div class="field-row"><div class="field"><label>品种</label><input id="np-type" placeholder="布偶猫"></div><div class="field"><label>年龄</label><input id="np-age" placeholder="3岁"></div></div>
+    <div class="field"><label>健康情况</label><input id="np-health" placeholder="健康 / 慢性病等"></div>
+    <div class="field"><label>喂食偏好</label><input id="np-feed" placeholder="每日2次 · 定点定量"></div>
+    <div class="field"><label>性格特点</label><input id="np-temper" placeholder="怕生 · 喜欢高处"></div>
+    <div class="field"><label>头像</label><div class="chip-group" id="np-emoji">${['🐱','🐶','🐰','🐹','🦜'].map((e,i)=>`<div class="chip ${i===0?'on':''}" data-act="npemoji" data-v="${e}">${e}</div>`).join('')}</div></div>
+  `,`<button class="btn btn-p" data-act="save-pet">保存档案</button>`);
+}
+
+/* ============ 事件分发 ============ */
+document.addEventListener('click',function(e){
+  /* 角色切换（角色按钮无 data-act，单独处理） */
+  const roleBtn=e.target.closest('.role-btn');
+  if(roleBtn){
+    document.querySelectorAll('.role-btn').forEach(x=>x.classList.remove('active'));
+    roleBtn.classList.add('active'); S.role=roleBtn.dataset.role;
+    S.view=null; render(); return;
+  }
+  const el=e.target.closest('[data-act]'); if(!el) return;
+  const a=el.dataset.act, id=el.dataset.id, v=el.dataset.v;
+
+  if(a==='close-modal'){ closeModal(); return; }
+
+  /* 底部导航切换 */
+  if(a==='tab'){
+    S.tab[S.role]=el.dataset.tab;
+    S.view=null; render(); return;
+  }
+  if(a==='a-tab'){ S.tab.admin=v; S.view=null; render(); return; }
+  if(a==='a-view'){ S.view={name:v}; render(); return; }
+  if(a==='back'){ S.view=null; render(); return; }
+
+  /* 消费者：首页 */
+  if(a==='service'){
+    S.selectedService=id; S.selectedWorker=null; S.agree=false;
+    S.draft={petId:DB.pets[0]?.id||'',date:'',time:'19:00',address:'',note:'',qty:1};
+    S.view={name:'service',id}; render(); return;
+  }
+  if(a==='pick-worker'){
+    e.stopPropagation(); S.selectedWorker=id;
+    if(S.view&&S.view.name==='service'){ render(); }
+    else{ toast(`已选择 ${workerById(id)?.name}`); render(); }
+    return;
+  }
+  if(a==='to-checkout'){ S.view={name:'checkout'}; render(); return; }
+  if(a==='dpet'){ collectDraft(); S.draft.petId=id; render(); return; }
+  if(a==='ddate'){ collectDraft(); S.draft.date=v; render(); return; }
+  if(a==='agree'){
+    S.agree=!S.agree;
+    const box=el;
+    box.classList.toggle('on',S.agree);
+    const bx=box.querySelector('.bx'); if(bx) bx.textContent=S.agree?'✓':'';
+    return;
+  }
+
+  if(a==='submit-order'){
+    collectDraft();
+    if(!S.agree){ toast('请先勾选同意电子协议'); return; }
+    if(!S.draft.petId){ toast('请选择宠物'); return; }
+    if(!S.draft.date){ toast('请选择服务日期'); return; }
+    if(!S.draft.address){ toast('请填写服务地址'); return; }
+    const s=serviceById(S.selectedService), w=workerById(S.selectedWorker), p=petById(S.draft.petId);
+    const qty=S.draft.qty||1;
+    const order={
+      id:nextId(), serviceId:s.id, serviceName:s.name, serviceIcon:s.icon,
+      workerId:w.id, workerName:w.name, petId:p.id, petName:p.name, petEmoji:p.emoji,
+      date:S.draft.date, time:S.draft.time, address:S.draft.address, note:S.draft.note,
+      qty, amount:Math.max(0,s.price*qty-10), status:'wait', createdAt:new Date().toISOString(),
+      agreement:true, report:null, review:null
+    };
+    DB.orders.push(order); saveDB();
+    S.view={name:'pay',id:order.id}; render(); toast('订单已创建'); return;
+  }
+  if(a==='mark-paid'){
+    collectDraftIfNeeded();
+    const o=orderById(id); if(!o) return;
+    o.status='paid'; o.paidAt=new Date().toISOString(); saveDB();
+    S.view=null; S.tab.consumer='orders'; S.orderFilter='all'; render(); toast('支付已标记，服务者会收到接单提醒'); return;
+  }
+  if(a==='later-pay'){
+    collectDraftIfNeeded();
+    S.view=null; S.tab.consumer='orders'; render(); return;
+  }
+  if(a==='go-pay'){ S.view={name:'pay',id}; render(); return; }
+  if(a==='ofilter'){ S.orderFilter=v; render(); return; }
+  if(a==='open-order'){ S.view={name:'order',id}; render(); return; }
+  if(a==='open-report'){ S.view={name:'report',id}; render(); return; }
+  if(a==='star'){ S.rating=+v; document.querySelectorAll('#stars span').forEach(x=>x.classList.toggle('on',+x.dataset.v<=S.rating)); return; }
+  if(a==='submit-review'){
+    const o=orderById(id); if(!o) return;
+    o.review={stars:S.rating,text:($('#review-text')?.value||'').trim(),at:new Date().toISOString()};
+    o.status='done';
+    const w=workerById(o.workerId); if(w){ w.serves+=1; }
+    saveDB(); render(); toast('评价已提交，信用档案已更新'); return;
+  }
+  if(a==='confirm-done'){
+    const o=orderById(id); if(!o) return;
+    o.status='done'; saveDB(); render(); toast('服务已确认完成，别忘了给个评价'); return;
+  }
+  if(a==='add-pet'){ petModal(); return; }
+  if(a==='npemoji'){
+    document.querySelectorAll('#np-emoji .chip').forEach(x=>x.classList.remove('on')); el.classList.add('on'); return;
+  }
+  if(a==='save-pet'){
+    const name=$('#np-name')?.value.trim(); if(!name){ toast('请填写宠物名字'); return; }
+    const emoji=document.querySelector('#np-emoji .chip.on')?.dataset.v||'🐱';
+    DB.pets.push({id:'p'+Date.now(),name,type:$('#np-type')?.value||'未知',age:$('#np-age')?.value||'',health:$('#np-health')?.value||'',feed:$('#np-feed')?.value||'',temper:$('#np-temper')?.value||'',emoji});
+    saveDB(); closeModal(); render(); toast('宠物档案已保存'); return;
+  }
+
+  /* 服务者 */
+  if(a==='accept'){
+    const o=orderById(id); if(!o) return;
+    o.workerId=DB.workers[0].id; o.workerName=DB.workers[0].name;
+    o.status='serving'; saveDB();
+    S.tab.worker='myservice'; render(); toast('已确认接单，请按约定时间上门'); return;
+  }
+  if(a==='go-checkin'){ S.checkinDraft[id]=S.checkinDraft[id]||{}; S.view={name:'checkin',id}; render(); return; }
+  if(a==='photo'){
+    // 先暂存已输入的日报，避免整页重绘导致内容丢失
+    const noteEl=document.querySelector('#check-note');
+    const curNote=noteEl?noteEl.value:'';
+    const key=el.dataset.key;
+    S.checkinDraft[id]=S.checkinDraft[id]||{};
+    S.checkinDraft[id][key]={emoji:CHECK_STEPS.find(x=>x.key===key)?.emoji||'📷',time:new Date().toISOString()};
+    if(curNote) S.checkinDraft[id].note=curNote;
+    render(); toast('已拍照留痕（模拟）'); return;
+  }
+  if(a==='submit-checkin'){
+    const o=orderById(id); if(!o) return;
+    const d=S.checkinDraft[id]||{};
+    const missing=CHECK_STEPS.filter(x=>!d[x.key]);
+    if(missing.length){ toast(`还差 ${missing.length} 张照片（${missing[0].label}）`); return; }
+    const note=$('#check-note')?.value||d.note||'';
+    d.note=note; S.checkinDraft[id]=d;
+    const photos=CHECK_STEPS.map(x=>({label:x.label,emoji:d[x.key].emoji,time:d[x.key].time}));
+    const tmp={id:o.id,petName:o.petName,serviceName:o.serviceName,workerName:o.workerName,checkin:{photos}};
+    o.report={time:new Date().toLocaleString('zh-CN',{hour12:false}),photos,note,hash:genHash(tmp)};
+    o.status='report'; saveDB();
+    S.view=null; S.tab.worker='myservice'; render(); toast('报告已生成并完成哈希存证'); return;
+  }
+
+  /* 管理 */
+  if(a==='save-qr'){ DB.config.qrUrl=($('#qr-url')?.value||'').trim(); DB.config.qrText=($('#qr-text')?.value||'').trim(); saveDB(); S.view=null; render(); toast('收款设置已保存'); return; }
+  if(a==='export'){
+    const blob=new Blob([JSON.stringify(DB,null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob); const a2=document.createElement('a');
+    a2.href=url; a2.download='安心爪数据备份_'+new Date().toISOString().slice(0,10)+'.json'; a2.click();
+    URL.revokeObjectURL(url); toast('数据备份已下载'); return;
+  }
+  if(a==='reset'){
+    openModal('确认重置','<div style="font-size:12.5px;color:var(--ink2);line-height:1.8">这会清空所有订单、宠物档案和设置，恢复到初始演示数据。<br><br><b style="color:var(--red)">此操作不可撤销。</b>建议先导出数据备份。</div>',
+      `<button class="btn btn-ghost" data-act="close-modal" style="margin-bottom:9px">取消</button><button class="btn btn-p" style="background:var(--red)" data-act="reset-confirm">确认重置</button>`);
+    return;
+  }
+  if(a==='reset-confirm'){
+    DB=seedDB(); saveDB(); closeModal(); S.view=null; S.tab.consumer='home'; render(); toast('已重置为演示数据'); return;
+  }
+});
+
+/* 收款码图片上传：选图后压缩为 base64 并实时预览 + 回填地址框 */
+document.addEventListener('change',function(e){
+  if(e.target.id!=='qr-file') return;
+  const file=e.target.files&&e.target.files[0]; if(!file) return;
+  if(!file.type.startsWith('image/')){ toast('请选择图片文件'); return; }
+  if(file.size>8*1024*1024){ toast('图片请小于 8MB'); return; }
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    const img=new Image();
+    img.onload=function(){
+      // 压缩到最大边 720px，避免 localStorage 超限
+      const max=720, scale=Math.min(1,max/Math.max(img.width,img.height));
+      const cv=document.createElement('canvas');
+      cv.width=Math.round(img.width*scale); cv.height=Math.round(img.height*scale);
+      cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);
+      const data=cv.toDataURL('image/jpeg',0.82);
+      const urlInput=$('#qr-url'); if(urlInput) urlInput.value=data;
+      const box=document.querySelector('.qr-upload');
+      if(box) box.innerHTML=`<img src="${data}" alt="收款码预览"><span class="up-tip">已选择 · 点击可更换</span>`;
+      toast('图片已读入，点「保存设置」生效');
+    };
+    img.onerror=function(){ toast('图片读取失败，请换一张试试'); };
+    img.src=ev.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+
+function collectDraftIfNeeded(){
+  const t=$('#f-time'); if(t) collectDraft();
+}
+
+/* ============ 启动 ============ */
+document.querySelectorAll('.role-btn').forEach(b=>b.addEventListener('click',()=>{}));
+render();
+
+</script>
+</body>
+</html>
